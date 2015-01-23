@@ -1,0 +1,12 @@
+dependencies {
+    compile project(":gridpack-common")
+    compile "pnnl.goss.powergrid:powergrid-common:${gossPowergridVersion}"
+    compile "pnnl.goss.powergrid:powergrid-server:${gossPowergridVersion}"
+    compile "pnnl.goss:goss-core:${gossCoreVersion}"
+}
+
+jar {
+    manifest {
+        instruction "Export-Package", "pnnl.goss.gridpack.services"
+    }
+}

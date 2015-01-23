@@ -1,5 +1,5 @@
 /*
-	Copyright (c) 2014, Battelle Memorial Institute
+    Copyright (c) 2014, Battelle Memorial Institute
     All rights reserved.
     Redistribution and use in source and binary forms, with or without
     modification, are permitted provided that the following conditions are met:
@@ -11,7 +11,7 @@
     THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
     ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
     WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-     
+
     DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
     ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
     (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
@@ -64,182 +64,181 @@ import pnnl.goss.powergrid.datamodel.Bus;
 import pnnl.goss.powergrid.datamodel.Line;
 import pnnl.goss.powergrid.datamodel.Load;
 import pnnl.goss.powergrid.datamodel.Machine;
-import pnnl.goss.powergrid.datamodel.Powergrid;
 import pnnl.goss.powergrid.datamodel.SwitchedShunt;
 import pnnl.goss.powergrid.datamodel.Transformer;
 
 @XmlRootElement(name="GridpackPowergrid")
 public class GridpackPowergrid {
-	private static Logger log = LoggerFactory.getLogger(GridpackPowergrid.class);
-	
-	PowergridModel grid;
-	String caseId;
-	Double sBase;
-	String mrid;
-	List<GridpackBus> buses = new ArrayList<GridpackBus>();
-	List<TransmissionElement> branches = new ArrayList<TransmissionElement>();
-	
-	HashMap<Integer, List<GridpackShunt>> busShuntMap = new HashMap<Integer, List<GridpackShunt>>();
-	HashMap<Integer, List<GridpackGenerator>> busGeneratorMap = new HashMap<Integer, List<GridpackGenerator>>();
-	HashMap<Integer, List<GridpackLoad>> busLoadMap = new HashMap<Integer, List<GridpackLoad>>();
-	// String frombus/tobus and the list of branches associated with that.
-	HashMap<String, GridpackBranch> branchFromToMap = new HashMap<>();
-	
-	/**
-	 * Required or the jaxb will complain.
-	 */
-	@SuppressWarnings("unused")
-	private GridpackPowergrid(){
-		
-	}
-	
-	@XmlElement(name="CASE_SBASE")
-	public Double getSBase(){
-		return sBase;
-	}
-	
-	@XmlElement(name="CASE_ID")
-	public String getCaseId(){
-		return caseId;
-	}
-	@XmlElement(name="Mrid")	
-	public String getMrid(){
-		return mrid;
-	}
-	
-	public GridpackPowergrid(PowergridModel grid){
-		this.grid = grid;
-		this.caseId = grid.getPowergrid().getCaseIdentifier();
-		this.mrid = grid.getPowergrid().getMrid();
-		this.sBase = grid.getPowergrid().getSbase();
-		
-		for(SwitchedShunt item:grid.getSwitchedShunts()){
-			if (!busShuntMap.containsKey(item.getBusNumber())){
-				busShuntMap.put(item.getBusNumber(), new ArrayList<GridpackShunt>());
-			}
-			
-			busShuntMap.get(item.getBusNumber()).add(GridpackShunt.buildFromObject(item));
-		}
-		
-		for(Load item:grid.getLoads()){
-			if (!busLoadMap.containsKey(item.getBusNumber())){
-				busLoadMap.put(item.getBusNumber(), new ArrayList<GridpackLoad>());
-			}
-			
-			busLoadMap.get(item.getBusNumber()).add(GridpackLoad.buildFromObject(item));
-		}
-		
-		for(Machine item:grid.getMachines()){
-			if (!busGeneratorMap.containsKey(item.getBusNumber())){
-				busGeneratorMap.put(item.getBusNumber(), new ArrayList<GridpackGenerator>());
-			}
-			
-			busGeneratorMap.get(item.getBusNumber()).add(GridpackGenerator.buildFromObject(item));
-		}
-		
-		for(Bus bus:this.grid.getBuses()){
-			GridpackBus newBus = GridpackBus.buildFromObject(bus);
-			
-			if(busShuntMap.containsKey(newBus.getBusNumber())){
-				newBus.setShunts(busShuntMap.get(newBus.getBusNumber()));
-			}
-			
-			if(busGeneratorMap.containsKey(newBus.getBusNumber())){
-				newBus.setGenerators(busGeneratorMap.get(newBus.getBusNumber()));
-			}
-			
-			if(busLoadMap.containsKey(newBus.getBusNumber())){
-				newBus.setLoads(busLoadMap.get(newBus.getBusNumber()));
-			}
-			
-			buses.add(newBus);
-		}
-		
-		for(Branch branch:this.grid.getBranches()){
-			TransmissionElement element = null;
-			boolean isLine = false;
-			if (isLine(branch)){
-				element = TransmissionElementLine.buildFromObject(this.grid, branch);
-				isLine = true;
-			}
-			else if (isTransformer(branch)){
-				element = TransmissionElementTransformer.buildFromObject(this.grid, branch);
-			}
-			else{
-				log.error("Branch: "+branch.getBranchId()+ " is marked as neither line nor transformer!");
-				continue;
-			}
+    private static Logger log = LoggerFactory.getLogger(GridpackPowergrid.class);
 
-			String fromToKey = String.format("%d/%d", element.getFromBusNumber(), element.getToBusNumber());
-			String toFromKey = String.format("%d/%d", element.getToBusNumber(), element.getFromBusNumber());
-			
-			if (branchFromToMap.containsKey(fromToKey)){
-				if(isLine){
-					branchFromToMap.get(fromToKey).addItem((TransmissionElementLine)element);
-				}
-				else{
-					branchFromToMap.get(fromToKey).addItem((TransmissionElementTransformer)element);
-				}
-			}
-			else if(branchFromToMap.containsKey(toFromKey)){
-				element.setSwitched(true);
-				if(isLine){
-					branchFromToMap.get(toFromKey).addItem((TransmissionElementLine)element);
-				}
-				else{
-					branchFromToMap.get(toFromKey).addItem((TransmissionElementTransformer)element);
-				}
-			}
-			else{
-				GridpackBranch newBranch = new GridpackBranch();
-				newBranch.setFromBusNumber(branch.getFromBusNumber());
-				newBranch.setTobusNumber(branch.getToBusNumber());
-				newBranch.setBranchMrid(branch.getMrid());
-				if (isLine){
-					newBranch.addItem((TransmissionElementLine)element);
-				}
-				else{
-					newBranch.addItem((TransmissionElementTransformer)element);
-				}
-				branchFromToMap.put(fromToKey, newBranch);
-			}	
-		}
-	}
-	
-	private boolean isLine(Branch branch){
-		for(Line x: grid.getLines()){
-			if (branch.getBranchId()==x.getBranchId()){
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	private boolean isTransformer(Branch branch){
-		for(Transformer x: grid.getTransformers()){
-			if (branch.getBranchId()==x.getBranchId()){
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	@XmlElementWrapper(name="Buses")
-	@XmlElement(name="Bus", type=GridpackBus.class)
-	public Collection<GridpackBus> getBuses(){
-		return this.buses;
-	}
-	
-	@XmlElementWrapper(name="Branches")
-	@XmlElement(name="Branch", type=GridpackBranch.class)
-	public Collection<GridpackBranch> getGridpackBranches(){
-		return branchFromToMap.values();
-	}
-	
-	/*
-	@XmlElementWrapper(name="Branches")
-	@XmlElement(name="Branch", type=GridpackBranch.class)
-	public Collection<GridpackBranch> getBranches(){
-		return this.branches;
-	}*/
+    PowergridModel grid;
+    String caseId;
+    Double sBase;
+    String mrid;
+    List<GridpackBus> buses = new ArrayList<GridpackBus>();
+    List<TransmissionElement> branches = new ArrayList<TransmissionElement>();
+
+    HashMap<Integer, List<GridpackShunt>> busShuntMap = new HashMap<Integer, List<GridpackShunt>>();
+    HashMap<Integer, List<GridpackGenerator>> busGeneratorMap = new HashMap<Integer, List<GridpackGenerator>>();
+    HashMap<Integer, List<GridpackLoad>> busLoadMap = new HashMap<Integer, List<GridpackLoad>>();
+    // String frombus/tobus and the list of branches associated with that.
+    HashMap<String, GridpackBranch> branchFromToMap = new HashMap<>();
+
+    /**
+     * Required or the jaxb will complain.
+     */
+    @SuppressWarnings("unused")
+    private GridpackPowergrid(){
+
+    }
+
+    @XmlElement(name="CASE_SBASE")
+    public Double getSBase(){
+        return sBase;
+    }
+
+    @XmlElement(name="CASE_ID")
+    public String getCaseId(){
+        return caseId;
+    }
+    @XmlElement(name="Mrid")
+    public String getMrid(){
+        return mrid;
+    }
+
+    public GridpackPowergrid(PowergridModel grid){
+        this.grid = grid;
+        this.caseId = grid.getPowergrid().getCaseIdentifier();
+        this.mrid = grid.getPowergrid().getMrid();
+        this.sBase = grid.getPowergrid().getSbase();
+
+        for(SwitchedShunt item:grid.getSwitchedShunts()){
+            if (!busShuntMap.containsKey(item.getBusNumber())){
+                busShuntMap.put(item.getBusNumber(), new ArrayList<GridpackShunt>());
+            }
+
+            busShuntMap.get(item.getBusNumber()).add(GridpackShunt.buildFromObject(item));
+        }
+
+        for(Load item:grid.getLoads()){
+            if (!busLoadMap.containsKey(item.getBusNumber())){
+                busLoadMap.put(item.getBusNumber(), new ArrayList<GridpackLoad>());
+            }
+
+            busLoadMap.get(item.getBusNumber()).add(GridpackLoad.buildFromObject(item));
+        }
+
+        for(Machine item:grid.getMachines()){
+            if (!busGeneratorMap.containsKey(item.getBusNumber())){
+                busGeneratorMap.put(item.getBusNumber(), new ArrayList<GridpackGenerator>());
+            }
+
+            busGeneratorMap.get(item.getBusNumber()).add(GridpackGenerator.buildFromObject(item));
+        }
+
+        for(Bus bus:this.grid.getBuses()){
+            GridpackBus newBus = GridpackBus.buildFromObject(bus);
+
+            if(busShuntMap.containsKey(newBus.getBusNumber())){
+                newBus.setShunts(busShuntMap.get(newBus.getBusNumber()));
+            }
+
+            if(busGeneratorMap.containsKey(newBus.getBusNumber())){
+                newBus.setGenerators(busGeneratorMap.get(newBus.getBusNumber()));
+            }
+
+            if(busLoadMap.containsKey(newBus.getBusNumber())){
+                newBus.setLoads(busLoadMap.get(newBus.getBusNumber()));
+            }
+
+            buses.add(newBus);
+        }
+
+        for(Branch branch:this.grid.getBranches()){
+            TransmissionElement element = null;
+            boolean isLine = false;
+            if (isLine(branch)){
+                element = TransmissionElementLine.buildFromObject(this.grid, branch);
+                isLine = true;
+            }
+            else if (isTransformer(branch)){
+                element = TransmissionElementTransformer.buildFromObject(this.grid, branch);
+            }
+            else{
+                log.error("Branch: "+branch.getBranchId()+ " is marked as neither line nor transformer!");
+                continue;
+            }
+
+            String fromToKey = String.format("%d/%d", element.getFromBusNumber(), element.getToBusNumber());
+            String toFromKey = String.format("%d/%d", element.getToBusNumber(), element.getFromBusNumber());
+
+            if (branchFromToMap.containsKey(fromToKey)){
+                if(isLine){
+                    branchFromToMap.get(fromToKey).addItem((TransmissionElementLine)element);
+                }
+                else{
+                    branchFromToMap.get(fromToKey).addItem((TransmissionElementTransformer)element);
+                }
+            }
+            else if(branchFromToMap.containsKey(toFromKey)){
+                element.setSwitched(true);
+                if(isLine){
+                    branchFromToMap.get(toFromKey).addItem((TransmissionElementLine)element);
+                }
+                else{
+                    branchFromToMap.get(toFromKey).addItem((TransmissionElementTransformer)element);
+                }
+            }
+            else{
+                GridpackBranch newBranch = new GridpackBranch();
+                newBranch.setFromBusNumber(branch.getFromBusNumber());
+                newBranch.setTobusNumber(branch.getToBusNumber());
+                newBranch.setBranchMrid(branch.getMrid());
+                if (isLine){
+                    newBranch.addItem((TransmissionElementLine)element);
+                }
+                else{
+                    newBranch.addItem((TransmissionElementTransformer)element);
+                }
+                branchFromToMap.put(fromToKey, newBranch);
+            }
+        }
+    }
+
+    private boolean isLine(Branch branch){
+        for(Line x: grid.getLines()){
+            if (branch.getBranchId()==x.getBranchId()){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isTransformer(Branch branch){
+        for(Transformer x: grid.getTransformers()){
+            if (branch.getBranchId()==x.getBranchId()){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @XmlElementWrapper(name="Buses")
+    @XmlElement(name="Bus", type=GridpackBus.class)
+    public Collection<GridpackBus> getBuses(){
+        return this.buses;
+    }
+
+    @XmlElementWrapper(name="Branches")
+    @XmlElement(name="Branch", type=GridpackBranch.class)
+    public Collection<GridpackBranch> getGridpackBranches(){
+        return branchFromToMap.values();
+    }
+
+    /*
+    @XmlElementWrapper(name="Branches")
+    @XmlElement(name="Branch", type=GridpackBranch.class)
+    public Collection<GridpackBranch> getBranches(){
+        return this.branches;
+    }*/
 }

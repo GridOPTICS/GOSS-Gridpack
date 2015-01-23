@@ -1,0 +1,9 @@
+dependencies {
+    compile "pnnl.goss.powergrid:powergrid-common:${gossPowergridVersion}"
+}
+
+jar {
+    manifest {
+        instruction "Export-Package", 'pnnl.goss.gridpack.common.datamodel'
+    }
+}

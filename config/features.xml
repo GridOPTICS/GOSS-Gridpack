@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.2.0" name="@project.name@-@project.version@">
+
+    <feature name="goss-gridpack-feature" version="@project.version@">
+        <feature version="@gossPowergridVersion@">goss-powergrid-feature</feature>
+
+        <bundle start-level="88" dependency="true">mvn:pnnl.goss.gridpack/gridpack-common/@project.version@</bundle>
+        <bundle start-level="89" dependency="true">mvn:pnnl.goss.gridpack/gridpack-server/@project.version@</bundle>
+
+    </feature>
+ </features>

@@ -30,7 +30,10 @@ http://cxf.apache.org/blueprint/jaxrs http://cxf.apache.org/schemas/blueprint/ja
         </jaxrs:serviceBeans>
     </jaxrs:server>
 
-    <bean class="pnnl.goss.gridpack.service.GridpackServiceImpl" id="gridpackBean" />
-    
+    <bean class="pnnl.goss.gridpack.service.impl.GridpackServiceImpl" id="gridpackBean">
+        <property name="powergridService" ref="powergridServiceRef" />
+    </bean>
+
+    <reference id="powergridServiceRef" interface="pnnl.goss.powergrid.server.PowergridService"></reference>
 
 </blueprint>
