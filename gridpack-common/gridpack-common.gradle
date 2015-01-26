@@ -4,6 +4,6 @@ dependencies {
 
 jar {
     manifest {
-        instruction "Export-Package", 'pnnl.goss.gridpack.common.datamodel'
+        instruction "Export-Package", 'pnnl.goss.gridpack.model'
     }
 }

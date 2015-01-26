@@ -86,8 +86,9 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import pnnl.goss.core.DataResponse;
-import pnnl.goss.gridpack.common.datamodel.GridpackBus;
-import pnnl.goss.gridpack.common.datamodel.GridpackPowergrid;
+import pnnl.goss.gridpack.model.GridpackBus;
+import pnnl.goss.gridpack.model.GridpackPowergrid;
+import pnnl.goss.gridpack.model.impl.GridpackPowergridImpl;
 import pnnl.goss.gridpack.services.GridpackService;
 import pnnl.goss.powergrid.PowergridModel;
 import pnnl.goss.powergrid.requests.RequestPowergrid;
@@ -164,7 +165,7 @@ public class GridpackServiceImpl implements GridpackService {
 
         GridpackPowergrid pg;
 
-        pg = new GridpackPowergrid(model);
+        pg = new GridpackPowergridImpl(model);
 
         return pg;
     }

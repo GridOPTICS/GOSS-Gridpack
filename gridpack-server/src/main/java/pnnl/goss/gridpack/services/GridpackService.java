@@ -6,7 +6,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import pnnl.goss.gridpack.common.datamodel.GridpackPowergrid;
+import pnnl.goss.gridpack.model.GridpackPowergrid;
 
 @Path("/")
 @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
