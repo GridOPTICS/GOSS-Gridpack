@@ -1,4 +1,4 @@
-package pnnl.goss.gridpack.common.datamodel;
+package pnnl.goss.gridpack.model.impl;
 
 import java.util.List;
 
@@ -8,7 +8,7 @@ import pnnl.goss.powergrid.PowergridModel;
 import pnnl.goss.powergrid.datamodel.Branch;
 import pnnl.goss.powergrid.datamodel.Transformer;
 
-public class TransmissionElementTransformer extends TransmissionElement{
+public class TransmissionElementTransformerImpl extends TransmissionElementImpl{
 	
 	// Transformer Data
 	private double ratio;
@@ -19,11 +19,11 @@ public class TransmissionElementTransformer extends TransmissionElement{
 	private double rmi;
 	private double vma;
 
-	private TransmissionElementTransformer(){
+	private TransmissionElementTransformerImpl(){
 		super();
 	}
 		
-	private TransmissionElementTransformer(PowergridModel gridModel, Branch branch, Transformer transformer){
+	private TransmissionElementTransformerImpl(PowergridModel gridModel, Branch branch, Transformer transformer){
 		super(gridModel,branch, transformer, null);
 		
 		ratio = transformer.getRatio();
@@ -44,11 +44,11 @@ public class TransmissionElementTransformer extends TransmissionElement{
 		return null;
 	}
 	
-	public static TransmissionElement buildFromObject(PowergridModel gridModel, Branch branch) {
+	public static TransmissionElementImpl buildFromObject(PowergridModel gridModel, Branch branch) {
 		log.debug("Building GridpackBranch from branchid: ", branch.getBranchId());
 		Transformer transformer = findTransformer(gridModel.getTransformers(), branch.getBranchId());
 		
-		return new TransmissionElementTransformer(gridModel, branch, transformer); 
+		return new TransmissionElementTransformerImpl(gridModel, branch, transformer); 
 	}
 	
 	/**

@@ -42,97 +42,54 @@
     operated by BATTELLE for the UNITED STATES DEPARTMENT OF ENERGY
     under Contract DE-AC05-76RL01830
 */
-package pnnl.goss.gridpack.common.datamodel;
+package pnnl.goss.gridpack.model.impl;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import pnnl.goss.powergrid.datamodel.Load;
+import pnnl.goss.powergrid.datamodel.SwitchedShunt;
 
-@XmlRootElement(name="Load")
-public class GridpackLoad {
-
-	// Bus number to which the load is connected
-	// type: integer
-	@XmlElement(name="LOAD_BUSNUMBER")
+@XmlRootElement(name="Shunt")
+public class GridpackShuntImpl {
+	@XmlElement(name="SHUNT_BUSNUMBER")
 	public int busNumber;
 	
-	// One- or two-character uppercase nonblank alphanumeric load identifier used to distinguish 
-	// among multiple loads connected to the same bus.
-	// Default value is '1'
-	// type: string
-	@XmlElement(name="LOAD_ID")
-	public String id;
+	@XmlElement(name="SHUNT_MODSW")
+	public String modeSw;
 	
-	// Initial load status
-	//  1: in-service
-	//  0: out-of-service
-	// Default value is 1
-	// type: integer
-	@XmlElement(name="LOAD_STATUS")
-	public int status;
+	@XmlElement(name="SHUNT_VSWHI")
+	public double vsHi;
 	
-	// Area to which the load is assigned
-	// type: integer
-	@XmlElement(name="LOAD_AREA")
-	public int area;
+	@XmlElement(name="SHUNT_VSWLO")
+	public double vsLow;
 	
-	// Zone to which the load is assigned
-	// type: integer
-	@XmlElement(name="LOAD_ZONE")
-	public int zone;
+	@XmlElement(name="SHUNT_SWREM")
+	public String swRem;
 	
-	// Active power component of constant MVA load; entered in MW
-	// type: real float
-	@XmlElement(name="LOAD_PL")
-	public double pL;
+	@XmlElement(name="SHUNT_VDES")
+	public String vDes;
 	
-	// Reactive power component of constant MVA load; entered in MVar
-	// type: real float
-	@XmlElement(name="LOAD_QL")
-	public double qL;
+	@XmlElement(name="SHUNT_RMPCT")
+	public double rmpct;
 	
-	// Active power component of constant current load; entered in MW at one per unit voltage
-	// type: real float
-	@XmlElement(name="LOAD_IP")
-	public double iP;
+	@XmlElement(name="SHUNT_RMIDNT")
+	public String remoteIdentity;
 	
-	// Reactive power component of constant current load; entered in Mvar at one per unit voltage
-	// type: real float
-	@XmlElement(name="LOAD_IQ")
-	public double iQ;
+	@XmlElement(name="SHUNT_BINIT")
+	public double bInit;
 	
-	// Active power component of constant admittance load; entered in MW at one per unit voltage
-	// type: real float
-	@XmlElement(name="LOAD_YP")
-	public double yP;
-	
-	// Reactive power component of constant admittance load; entered in MVar at one per unit voltage
-	// type: real float
-	@XmlElement(name="LOAD_YQ")
-	public double yQ;
-	
-	// Owner to which the load is assigned
-	// type: integer
-	@XmlElement(name="LOAD_OWNER")
-	public int owner;
-	
-	private GridpackLoad(){
+	private GridpackShuntImpl(){
 		
 	}
 	
-	public static GridpackLoad buildFromObject(Load load) {
-		GridpackLoad element = new GridpackLoad();
+	public static GridpackShuntImpl buildFromObject(SwitchedShunt shunt){
+		GridpackShuntImpl newShunt = new GridpackShuntImpl();
 		
-		element.busNumber = load.getBusNumber();
-		element.status = 1;
-		element.pL = load.getPload();
-		element.qL = load.getQload();
-	
+		newShunt.busNumber = shunt.getBusNumber();
+		newShunt.bInit = shunt.getBinit();
+		//newShunt.modeSw;
 		
-		
-		
-		return element;
+		return newShunt;
 	}
-	
+
 }

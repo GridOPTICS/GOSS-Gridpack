@@ -1,5 +1,5 @@
 /*
-	Copyright (c) 2014, Battelle Memorial Institute
+    Copyright (c) 2014, Battelle Memorial Institute
     All rights reserved.
     Redistribution and use in source and binary forms, with or without
     modification, are permitted provided that the following conditions are met:
@@ -11,7 +11,7 @@
     THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
     ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
     WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-     
+
     DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
     ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
     (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
@@ -42,54 +42,98 @@
     operated by BATTELLE for the UNITED STATES DEPARTMENT OF ENERGY
     under Contract DE-AC05-76RL01830
 */
-package pnnl.goss.gridpack.common.datamodel;
+package pnnl.goss.gridpack.model.impl;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import pnnl.goss.powergrid.datamodel.SwitchedShunt;
+import pnnl.goss.gridpack.model.GridpackLoad;
+import pnnl.goss.powergrid.datamodel.Load;
 
-@XmlRootElement(name="Shunt")
-public class GridpackShunt {
-	@XmlElement(name="SHUNT_BUSNUMBER")
-	public int busNumber;
-	
-	@XmlElement(name="SHUNT_MODSW")
-	public String modeSw;
-	
-	@XmlElement(name="SHUNT_VSWHI")
-	public double vsHi;
-	
-	@XmlElement(name="SHUNT_VSWLO")
-	public double vsLow;
-	
-	@XmlElement(name="SHUNT_SWREM")
-	public String swRem;
-	
-	@XmlElement(name="SHUNT_VDES")
-	public String vDes;
-	
-	@XmlElement(name="SHUNT_RMPCT")
-	public double rmpct;
-	
-	@XmlElement(name="SHUNT_RMIDNT")
-	public String remoteIdentity;
-	
-	@XmlElement(name="SHUNT_BINIT")
-	public double bInit;
-	
-	private GridpackShunt(){
-		
-	}
-	
-	public static GridpackShunt buildFromObject(SwitchedShunt shunt){
-		GridpackShunt newShunt = new GridpackShunt();
-		
-		newShunt.busNumber = shunt.getBusNumber();
-		newShunt.bInit = shunt.getBinit();
-		//newShunt.modeSw;
-		
-		return newShunt;
-	}
+@XmlRootElement(name="Load")
+public class GridpackLoadImpl implements GridpackLoad {
+
+    // Bus number to which the load is connected
+    // type: integer
+    @XmlElement(name="LOAD_BUSNUMBER")
+    public int busNumber;
+
+    // One- or two-character uppercase nonblank alphanumeric load identifier used to distinguish
+    // among multiple loads connected to the same bus.
+    // Default value is '1'
+    // type: string
+    @XmlElement(name="LOAD_ID")
+    public String id;
+
+    // Initial load status
+    //  1: in-service
+    //  0: out-of-service
+    // Default value is 1
+    // type: integer
+    @XmlElement(name="LOAD_STATUS")
+    public int status;
+
+    // Area to which the load is assigned
+    // type: integer
+    @XmlElement(name="LOAD_AREA")
+    public int area;
+
+    // Zone to which the load is assigned
+    // type: integer
+    @XmlElement(name="LOAD_ZONE")
+    public int zone;
+
+    // Active power component of constant MVA load; entered in MW
+    // type: real float
+    @XmlElement(name="LOAD_PL")
+    public double pL;
+
+    // Reactive power component of constant MVA load; entered in MVar
+    // type: real float
+    @XmlElement(name="LOAD_QL")
+    public double qL;
+
+    // Active power component of constant current load; entered in MW at one per unit voltage
+    // type: real float
+    @XmlElement(name="LOAD_IP")
+    public double iP;
+
+    // Reactive power component of constant current load; entered in Mvar at one per unit voltage
+    // type: real float
+    @XmlElement(name="LOAD_IQ")
+    public double iQ;
+
+    // Active power component of constant admittance load; entered in MW at one per unit voltage
+    // type: real float
+    @XmlElement(name="LOAD_YP")
+    public double yP;
+
+    // Reactive power component of constant admittance load; entered in MVar at one per unit voltage
+    // type: real float
+    @XmlElement(name="LOAD_YQ")
+    public double yQ;
+
+    // Owner to which the load is assigned
+    // type: integer
+    @XmlElement(name="LOAD_OWNER")
+    public int owner;
+
+    private GridpackLoadImpl(){
+
+    }
+
+    public static GridpackLoadImpl buildFromObject(Load load) {
+        GridpackLoadImpl element = new GridpackLoadImpl();
+
+        element.busNumber = load.getBusNumber();
+        element.status = 1;
+        element.pL = load.getPload();
+        element.qL = load.getQload();
+
+
+
+
+        return element;
+    }
 
 }

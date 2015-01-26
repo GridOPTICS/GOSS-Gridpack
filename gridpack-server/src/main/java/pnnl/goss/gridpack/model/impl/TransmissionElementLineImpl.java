@@ -1,4 +1,4 @@
-package pnnl.goss.gridpack.common.datamodel;
+package pnnl.goss.gridpack.model.impl;
 
 import java.util.List;
 
@@ -9,7 +9,7 @@ import pnnl.goss.powergrid.datamodel.Branch;
 import pnnl.goss.powergrid.datamodel.Line;
 import pnnl.goss.powergrid.datamodel.Transformer;
 
-public class TransmissionElementLine extends TransmissionElement {
+public class TransmissionElementLineImpl extends TransmissionElementImpl {
 	
 	// Line Data
 	private double gI;
@@ -18,11 +18,11 @@ public class TransmissionElementLine extends TransmissionElement {
 	private double bJ;
 	private double bCap;
 	
-	private TransmissionElementLine(){
+	private TransmissionElementLineImpl(){
 		super();
 	}
 		
-	private TransmissionElementLine(PowergridModel gridModel, Branch branch, Line line){
+	private TransmissionElementLineImpl(PowergridModel gridModel, Branch branch, Line line){
 		super(gridModel,branch, null, line);
 		
 		gI = line.getGi();
@@ -42,11 +42,11 @@ public class TransmissionElementLine extends TransmissionElement {
 		return null;
 	}	
 		
-	public static TransmissionElement buildFromObject(PowergridModel gridModel, Branch branch) {
+	public static TransmissionElementImpl buildFromObject(PowergridModel gridModel, Branch branch) {
 		log.debug("Building GridpackBranch from branchid: ", branch.getBranchId());
 		Line line = findLine(gridModel.getLines(), branch.getBranchId());
 		
-		return new TransmissionElementLine(gridModel, branch, line); 
+		return new TransmissionElementLineImpl(gridModel, branch, line); 
 	}
 	
 	/**
