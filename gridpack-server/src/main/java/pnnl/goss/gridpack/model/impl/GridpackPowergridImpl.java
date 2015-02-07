@@ -58,7 +58,6 @@ import org.slf4j.LoggerFactory;
 import pnnl.goss.gridpack.model.GridpackBranch;
 import pnnl.goss.gridpack.model.GridpackBus;
 import pnnl.goss.gridpack.model.GridpackPowergrid;
-import pnnl.goss.powergrid.PowergridModel;
 import pnnl.goss.powergrid.datamodel.Branch;
 import pnnl.goss.powergrid.datamodel.Bus;
 import pnnl.goss.powergrid.datamodel.Line;
@@ -66,6 +65,7 @@ import pnnl.goss.powergrid.datamodel.Load;
 import pnnl.goss.powergrid.datamodel.Machine;
 import pnnl.goss.powergrid.datamodel.SwitchedShunt;
 import pnnl.goss.powergrid.datamodel.Transformer;
+import pnnl.goss.powergrid.models.PowergridModel;
 
 @XmlRootElement(name="GridpackPowergrid")
 public class GridpackPowergridImpl implements GridpackPowergrid {
@@ -154,7 +154,7 @@ public class GridpackPowergridImpl implements GridpackPowergrid {
         for(Branch branch:this.grid.getBranches()){
             TransmissionElementImpl element = null;
             boolean isLine = false;
-            if (isLine(branch)){
+            if (branch.isLine()){
                 element = TransmissionElementLineImpl.buildFromObject(this.grid, branch);
                 isLine = true;
             }

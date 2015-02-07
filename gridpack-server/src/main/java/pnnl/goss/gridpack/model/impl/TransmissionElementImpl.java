@@ -12,11 +12,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pnnl.goss.gridpack.model.TransmissionElement;
-import pnnl.goss.powergrid.PowergridModel;
 import pnnl.goss.powergrid.datamodel.Branch;
 import pnnl.goss.powergrid.datamodel.Bus;
 import pnnl.goss.powergrid.datamodel.Line;
 import pnnl.goss.powergrid.datamodel.Transformer;
+import pnnl.goss.powergrid.models.PowergridModel;
 
 @XmlRootElement(name="Branch")
 public class TransmissionElementImpl implements TransmissionElement {
@@ -45,7 +45,6 @@ public class TransmissionElementImpl implements TransmissionElement {
     private int ckt;
     private double r;
     private double x;
-    private double rating;
     private double rateA;
     private double rateB;
     private double rateC;
@@ -57,7 +56,7 @@ public class TransmissionElementImpl implements TransmissionElement {
     private boolean isSwitched = false;
 
 
-    protected TransmissionElementImpl(PowergridModel gridModel, Branch branch, Transformer transformer, Line line) {
+    protected TransmissionElementImpl(PowergridModel gridModel, Branch branch, Transformer transformer) {
         branchId = branch.getBranchId();
         fromBusNumber = branch.getFromBusNumber();
         toBusNumber = branch.getToBusNumber();
@@ -81,7 +80,6 @@ public class TransmissionElementImpl implements TransmissionElement {
         //ckt = Integer.parseInt() branch.getCkt();
         r = branch.getR();
         x = branch.getX();
-        rating = branch.getRating();
         rateA = branch.getRateA();
         rateB = branch.getRateB();
         rateC = branch.getRateC();
@@ -95,10 +93,7 @@ public class TransmissionElementImpl implements TransmissionElement {
 
             isTransformer = true;
         }
-        // This is a line
-        else if(line != null){
 
-        }
     }
 
 //	/**
@@ -237,21 +232,6 @@ public class TransmissionElementImpl implements TransmissionElement {
      */
     public void setX(double x) {
         this.x = x;
-    }
-
-    /**
-     * @return the rating
-     */
-    @XmlElement(name = "BRANCH_RATING")
-    public double getRating() {
-        return rating;
-    }
-
-    /**
-     * @param rating the rating to set
-     */
-    public void setRating(double rating) {
-        this.rating = rating;
     }
 
     /**

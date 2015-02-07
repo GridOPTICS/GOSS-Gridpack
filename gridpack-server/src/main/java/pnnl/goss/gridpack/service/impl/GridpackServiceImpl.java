@@ -90,7 +90,7 @@ import pnnl.goss.gridpack.model.GridpackBus;
 import pnnl.goss.gridpack.model.GridpackPowergrid;
 import pnnl.goss.gridpack.model.impl.GridpackPowergridImpl;
 import pnnl.goss.gridpack.services.GridpackService;
-import pnnl.goss.powergrid.PowergridModel;
+import pnnl.goss.powergrid.models.PowergridModel;
 import pnnl.goss.powergrid.requests.RequestPowergrid;
 import pnnl.goss.powergrid.server.PowergridService;
 import pnnl.goss.powergrid.server.handlers.RequestPowergridHandler;
@@ -145,21 +145,21 @@ public class GridpackServiceImpl implements GridpackService {
 //        return null;
 //    }
 
-    public GridpackPowergrid getGridpackGrid(String powergridName){
+    public GridpackPowergrid getGridpackGrid(String gridMrid){
 
         if (powergridService == null) {
             throw new IllegalStateException("PowergridService unavailable.");
         }
 
-        if (powergridName== null || powergridName.isEmpty()){
+        if (gridMrid== null || gridMrid.isEmpty()){
             throw new IllegalArgumentException("Powergrid Name invalid!");
         }
 
-        PowergridModel model = powergridService.getPowergridModel(powergridName);
+        PowergridModel model = powergridService.getPowergridModel(gridMrid);
 
         if (model == null){
             // Make sure the response didn't throw an error.
-            GridpackUtils.throwInputError("Invalid powergrid specified: "+powergridName);
+            GridpackUtils.throwInputError("Invalid powergrid specified: "+gridMrid);
             return null;
         }
 
