@@ -50,21 +50,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -78,22 +67,17 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.apache.felix.ipojo.annotations.Component;
 import org.fusesource.hawtbuf.ByteArrayInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-import pnnl.goss.core.DataResponse;
-import pnnl.goss.gridpack.model.GridpackBus;
 import pnnl.goss.gridpack.model.GridpackPowergrid;
-import pnnl.goss.gridpack.model.impl.GridpackPowergridImpl;
+import pnnl.goss.gridpack.model.GridpackPowergrid;
 import pnnl.goss.gridpack.services.GridpackService;
 import pnnl.goss.powergrid.models.PowergridModel;
-import pnnl.goss.powergrid.requests.RequestPowergrid;
 import pnnl.goss.powergrid.server.PowergridService;
-import pnnl.goss.powergrid.server.handlers.RequestPowergridHandler;
 
 public class GridpackServiceImpl implements GridpackService {
 
@@ -165,7 +149,7 @@ public class GridpackServiceImpl implements GridpackService {
 
         GridpackPowergrid pg;
 
-        pg = new GridpackPowergridImpl(model);
+        pg = new GridpackPowergrid(model);
 
         return pg;
     }
@@ -183,7 +167,7 @@ public class GridpackServiceImpl implements GridpackService {
         StringWriter pretty = new StringWriter();
 
         try {
-            url = new URL("http://localhost:8181/cxf/gridpack?_wadl");
+            url = new URL("http://superfly.pnl.gov:7676/cxf/gridpack?_wadl");
             is = url.openStream();  // throws an IOException
             br = new BufferedReader(new InputStreamReader(is));
 
