@@ -36,4 +36,15 @@ http://cxf.apache.org/blueprint/jaxrs http://cxf.apache.org/schemas/blueprint/ja
 
     <reference id="powergridServiceRef" interface="pnnl.goss.powergrid.server.PowergridService"></reference>
 
+    <bean id="gridServlet" class="pnnl.goss.gridpack.servlets.GridServlet">
+        <property name="powergridService" ref="powergridServiceRef"></property>
+    </bean>
+
+
+    <service ref="gridServlet" interface="javax.servlet.http.HttpServlet">
+        <service-properties>
+            <entry key="alias" value="/grids" />
+        </service-properties>
+    </service>
+
 </blueprint>
