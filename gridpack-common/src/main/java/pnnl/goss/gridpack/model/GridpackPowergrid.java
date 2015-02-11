@@ -227,10 +227,9 @@ public class GridpackPowergrid {
         return (Collection) this.buses;
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     @XmlElementWrapper(name="Branches")
     @XmlElement(name="Branch", type=GridpackBranch.class)
     public Collection<GridpackBranch> getGridpackBranches(){
-        return (Collection)branchFromToMap.values();
+        return branchFromToMap.values();
     }
 }

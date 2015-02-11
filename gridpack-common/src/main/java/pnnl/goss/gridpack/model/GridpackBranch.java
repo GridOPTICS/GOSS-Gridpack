@@ -12,10 +12,13 @@ import pnnl.goss.gridpack.model.TransmissionElementTransformer;
 
 @XmlRootElement(name="Branch")
 public class GridpackBranch {
+
     private String branchMrid;
     private Integer fromBusNumber;
     private Integer tobusNumber;
+
     private List<TransmissionElementLine> transmissionLines = new ArrayList<TransmissionElementLine>();
+
     private List<TransmissionElementTransformer> transmissionTransformers = new ArrayList<TransmissionElementTransformer>();
 
     public String getBranchMrid() {
@@ -24,6 +27,7 @@ public class GridpackBranch {
     public void setBranchMrid(String branchMrid) {
         this.branchMrid = branchMrid;
     }
+
     @XmlElement(name="BRANCH_FROMBUS")
     public Integer getFromBusNumber() {
         return fromBusNumber;
