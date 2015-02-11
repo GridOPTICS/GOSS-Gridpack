@@ -96,21 +96,21 @@ public class TransmissionElement {
 
     }
 
-//	/**
-//	 * @return the buses
-//	 */
-//	@XmlElementWrapper(name = "ConnectedBuses")
-//	@XmlElement(name = "ConnectedBus", type = GridpackBus.class)
-//	public List<GridpackBus> getBuses() {
-//		return buses;
-//	}
-//
-//	/**
-//	 * @param buses the buses to set
-//	 */
-//	public void setBuses(List<GridpackBus> buses) {
-//		this.buses = buses;
-//	}
+    /**
+     * @return the buses
+     */
+    @XmlElementWrapper(name = "ConnectedBuses")
+    @XmlElement(name = "ConnectedBus", type = GridpackBus.class)
+    public List<GridpackBus> getBuses() {
+        return buses;
+    }
+
+    /**
+     * @param buses the buses to set
+     */
+    public void setBuses(List<GridpackBus> buses) {
+        this.buses = buses;
+    }
 
     /**
      * @return the branchId
