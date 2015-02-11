@@ -18,7 +18,7 @@ import pnnl.goss.powergrid.datamodel.Line;
 import pnnl.goss.powergrid.datamodel.Transformer;
 import pnnl.goss.powergrid.models.PowergridModel;
 
-@XmlRootElement(name="Branch")
+@XmlRootElement(name="TransmissionElement")
 public class TransmissionElement {
     static Logger log = LoggerFactory.getLogger(TransmissionElement.class);
 
